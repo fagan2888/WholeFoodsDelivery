@@ -62,7 +62,7 @@ class wholefoods(object):
                             'to: ' + sendto,
                             'mime-version: 1.0',
                             'content-type: text/html'])
-        body = "Availability Changed! WF can now deliver {}".format()
+        body = "Availability Changed! WF can now deliver {}".format(when)
         content = headers + '\r\n\r\n' + body
         session.sendmail(self.email_un, sendto, content)
         session.quit()
