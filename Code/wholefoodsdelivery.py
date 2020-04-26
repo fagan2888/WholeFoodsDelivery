@@ -51,12 +51,15 @@ class wholefoods(object):
                 url = BS(self.driver.find_element_by_id('nav-flyout-ya-signin').get_attribute('innerHTML')).find_all('a')[0].get('href')
             self.get_page(url)
         self.driver.find_element_by_class_name('a-input-text').send_keys(self.un)
+        time.sleep(2)
         self.driver.find_element_by_id('continue').click()
         self.driver.find_element_by_id('ap_password').send_keys(self.pw)
+        time.sleep(2)
         self.driver.find_element_by_id('signInSubmit').click()
     def send_gmail(self, sendto, when = ''):
         session = smtplib.SMTP('smtp.gmail.com', 587)
         session.starttls()
+        session.login(self.email_un, self.email_pw)
         headers = '\r\n'.join(['from: ' + self.email_un,
                             'subject: WF availability',
                             'to: ' + sendto,
@@ -102,13 +105,16 @@ class wholefoods(object):
         except:
             with codecs.open(self.logpath,'w', encoding = 'utf-8') as f:
                 f.write(','.join([str(self.avail), str(self.checktime)])+'\n')
-    def keep_checking(self, timer = 60*30, maxcheck = 24*60*60*30):
+    def keep_checking(self, timer = 60*6, maxcheck = 24*60*60*30):
         t0 = time.time()
         while True:
             try:
-                time.sleep(timer)
-                self.check_store_avail()                
+                try:
+                    self.check_store_avail()                
+                except:
+                    pass
                 self.write_to_log()
+                time.sleep(timer)
                 if time.time()-t0>maxcheck:
                     self.quit()
                     break
